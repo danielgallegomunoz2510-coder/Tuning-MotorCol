@@ -1,0 +1,22 @@
+# Dependencias y compilación
+node_modules/
+dist/
+
+# Variables locales y credenciales
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Registros y cachés
+*.log
+.vite/
+.cache/
+coverage/
+
+# Editores y sistema operativo
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+

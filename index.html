@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0B0D10" />
+    <meta
+      name="description"
+      content="Tunning Motorcol — Personaliza tu vehículo. Diseña tu estilo. Configurador 3D de vehículos premium."
+    />
+    <title>Tunning Motorcol · Personaliza tu vehículo</title>
+    <script type="module" src="/src/main.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#contenido-principal">Saltar al contenido</a>
+
+    <!-- Encabezado: se monta dinámicamente desde src/ui/Header.js -->
+    <header id="app-header" class="app-header"></header>
+
+    <!-- Contenedor de vistas: el router monta aquí cada pantalla -->
+    <main id="contenido-principal" class="app-main" tabindex="-1"></main>
+
+    <!-- Pie de página -->
+    <footer class="app-footer" id="app-footer">
+      <div class="app-footer__inner">
+        <p>
+          <strong>Tunning Motorcol</strong> · Personaliza tu vehículo. Diseña tu estilo.
+        </p>
+        <p class="app-footer__legal">
+          Proyecto académico. Modelos 3D: «2013 Subaru BRZ» por
+          <a href="https://sketchfab.com/ddiaz-design" target="_blank" rel="noopener noreferrer">Ddiaz Design</a>
+          (CC&nbsp;BY-NC-SA&nbsp;4.0); «2017 Ford F-150 Raptor» y «2024 Ford Mustang GT» por
+          <a href="https://sketchfab.com/ddiaz-design" target="_blank" rel="noopener noreferrer">Ddiaz Design</a>
+          (CC&nbsp;BY-NC-SA&nbsp;4.0); «Lamborghini Huracán» por
+          <a href="https://sketchfab.com/3d-models/lamborghini-huracan-f4004ef10bd44845b3cece359e6a6b2e" target="_blank" rel="noopener noreferrer">Outlaw Games</a>
+          (CC&nbsp;BY-NC&nbsp;4.0). Garaje «Parking_elevator_108MB» por
+          <a href="https://sketchfab.com/ahmagh2e" target="_blank" rel="noopener noreferrer">Mehdi Shahsavan</a>
+          (CC&nbsp;BY&nbsp;4.0). Modelos separados en piezas por Tunning Motorcol. Piezas de personalización originales (diseño propio).
+          Vehículos ilustrativos del prototipo.
+        </p>
+      </div>
+    </footer>
+
+    <!-- Capa para modales (autenticación, confirmaciones) -->
+    <div id="modal-root"></div>
+    <!-- Capa para notificaciones toast -->
+    <div id="toast-root" class="toast-root" aria-live="polite" aria-atomic="false"></div>
+
+  </body>
+</html>

@@ -1,0 +1,169 @@
+================================================================================
+TUNNING MOTORCOL — Instrucciones para Codex (montar en la web)
+================================================================================
+Proyecto: Vite 5 + JavaScript vanilla + Three.js (SIN React/Vue).
+Frontend: Vercel O Netlify (elige uno).
+Base de datos y Auth: Supabase (nube).
+NO uses la clave service_role en el frontend ni en variables publicas.
+
+Este archivo es la unica guia de despliegue. Sigue el orden. No improvises
+rutas de build. El sitio es una SPA con hash (#/coleccion, #/configurador, etc.).
+
+
+--------------------------------------------------------------------------------
+A. QUE HAY QUE SUBIR (BASE DE DATOS)
+--------------------------------------------------------------------------------
+Carpeta del repo:  supabase/
+
+  1) supabase/schema.sql
+     Crea las 11 tablas en 3FN, RLS, trigger de perfil al registrarse.
+     Tablas: perfiles, categorias_vehiculo, vehiculos, categorias_pieza,
+     piezas, compatibilidades, configuraciones, configuracion_detalles,
+     estados_solicitud, solicitudes, solicitud_configuraciones.
+
+  2) supabase/seed.sql
+     Datos iniciales: categorias, 4 vehiculos (brz, raptor, mustang, huracan),
+     piezas y compatibilidades.
+
+Orden OBLIGATORIO en el SQL Editor de Supabase:
+  primero schema.sql  →  luego seed.sql
+Pegar cada archivo COMPLETO y pulsar Run. Si schema.sql avisa de DROP de
+tablas legacy, es normal.
+
+
+--------------------------------------------------------------------------------
+B. SUPABASE (hacer esto ANTES del deploy web)
+--------------------------------------------------------------------------------
+1. Entra a https://supabase.com y abre el proyecto (o crea uno nuevo).
+2. SQL Editor → New query → pega TODO supabase/schema.sql → Run.
+3. Nueva query → pega TODO supabase/seed.sql → Run.
+4. Authentication → Providers → Email:
+   - Para demo/academia: desactiva "Confirm email" (si no, el usuario no
+     entra hasta confirmar el correo).
+5. Authentication → URL Configuration:
+   - Site URL = la URL final del sitio (Vercel o Netlify), ejemplo:
+       https://tunning-motorcol.vercel.app
+   - Redirect URLs: anade esa misma URL y
+       https://tunning-motorcol.vercel.app/**
+       (o el dominio de Netlify equivalente).
+6. Project Settings → API:
+   Copia:
+     - Project URL   →  https://XXXX.supabase.co
+     - anon / publishable key  (empieza por eyJ o sb_publishable_)
+   NUNCA copies service_role.
+
+Si las tablas no se crean, el registro falla con error de "perfiles" / schema
+cache. Vuelve a ejecutar schema.sql.
+
+
+--------------------------------------------------------------------------------
+C. VARIABLES DE ENTORNO DEL FRONTEND
+--------------------------------------------------------------------------------
+En Vercel o Netlify (NO en un .env commiteado con service_role):
+
+  VITE_SUPABASE_URL = https://XXXX.supabase.co
+  VITE_SUPABASE_KEY = <anon o publishable key>
+
+El codigo lee esto en src/supabase/client.js.
+Si no pones variables, usa valores por defecto del repo (proyecto
+fldpzahayuoskjkbumzb). Para un proyecto NUEVO de Supabase DEBES poner las
+variables y volver a hacer el build (Vite incrusta env en el bundle).
+
+En produccion el cliente llama DIRECTO a supabase.co (el proxy /supabase-api
+solo existe en npm run dev).
+
+
+--------------------------------------------------------------------------------
+D. BUILD (comun a Vercel y Netlify)
+--------------------------------------------------------------------------------
+Node.js 18 o superior.
+Comandos:
+
+  npm install
+  npm run build
+
+Salida: carpeta dist/
+Framework: Vite
+Publish directory: dist
+NO abras index.html con file://
+
+Los modelos 3D en public/models/ son pesados (GLB + garaje). El build los
+copia a dist. No los borres. Si el host rechaza un archivo >100 MB, el
+garaje (public/models/garage/) es el sospechoso.
+
+
+--------------------------------------------------------------------------------
+E. VERCEL
+--------------------------------------------------------------------------------
+1. Sube el repo (GitHub/GitLab) o usa Vercel CLI desde la raiz del proyecto.
+2. New Project → importa el repo.
+3. Framework Preset: Vite
+4. Root Directory: raiz (donde esta package.json). Si el zip se descomprimio
+   como TunningMotorCol/, esa es la raiz.
+5. Build Command: npm run build
+6. Output Directory: dist
+7. Environment Variables: VITE_SUPABASE_URL y VITE_SUPABASE_KEY
+8. Deploy.
+9. Copia la URL https://....vercel.app y pegala en Supabase Site URL + Redirect
+   URLs (paso B.5). Redeploy si cambiaste env despues del primer build.
+
+vercel.json opcional (SPA fallback; el sitio usa hash, igual es seguro):
+
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
+
+
+--------------------------------------------------------------------------------
+F. NETLIFY (alternativa a Vercel; NO hagas los dos a menos que te lo pidan)
+--------------------------------------------------------------------------------
+1. New site → importa el repo o arrastra la carpeta.
+2. Build command: npm run build
+3. Publish directory: dist
+4. Env: VITE_SUPABASE_URL y VITE_SUPABASE_KEY
+5. Deploy. Pon la URL *.netlify.app en Supabase Site URL + Redirect URLs.
+
+netlify.toml opcional:
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+
+--------------------------------------------------------------------------------
+G. COMPROBACION RAPIDA TRAS EL DEPLOY
+--------------------------------------------------------------------------------
+- Home carga, flota se ve, fotos de vehiculos OK.
+- En celular: hamburguesa con Iniciar sesion / Registrarse (no debajo del logo).
+- Crear cuenta → debe aparecer el usuario; si falla "no hay conexion", revisa
+  URL/key y que el proyecto Supabase no este pausado.
+- Si falla "falta schema / perfiles": no corriste schema.sql.
+- Entrar a Personalizar (ruta protegida) con sesion.
+- Configurador 3D: auto + garaje. WebGL obligatorio.
+
+
+--------------------------------------------------------------------------------
+H. QUE NO HACER
+--------------------------------------------------------------------------------
+- No subir node_modules ni dist al git si evitas peso; el host hace npm install.
+- No poner service_role en Vercel/Netlify (publico).
+- No cambiar base de Vite (debe quedar base: './').
+- No migrar a React.
+- No hace falta base de datos local (Postgres en el PC). Todo es Supabase cloud.
+
+
+--------------------------------------------------------------------------------
+I. LOCAL (opcional, para probar antes)
+--------------------------------------------------------------------------------
+  npm install
+  npm run dev
+  → http://localhost:5173
+  Vite hace proxy /supabase-api hacia el Project URL (evita CORS en dev).
+================================================================================

@@ -1,0 +1,11 @@
+Model Information:
+* title:	Lamborghini Huracan
+* source:	https://sketchfab.com/3d-models/lamborghini-huracan-f4004ef10bd44845b3cece359e6a6b2e
+* author:	Outlaw Games™ (https://sketchfab.com/Outlaw_Games)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Lamborghini Huracan" (https://sketchfab.com/3d-models/lamborghini-huracan-f4004ef10bd44845b3cece359e6a6b2e) by Outlaw Games™ (https://sketchfab.com/Outlaw_Games) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
